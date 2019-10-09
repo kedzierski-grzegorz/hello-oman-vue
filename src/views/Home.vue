@@ -8,10 +8,8 @@
     </transition>
     <Claim v-if="step === 0" />
     <SearchInput v-model="searchValue" :dark="step === 1" @input="handleInput" />
-    <div class="results">
-      <div v-for="item in result">
-        <p>{{ item.links[0].href }}</p>
-      </div>
+    <div v-if="result && !loading && step === 1" class="results">
+      <Item v-for="item in result" :key="item.data[0].nasa_id" :item="item" />
     </div>
   </div>
 </template>
@@ -21,6 +19,7 @@
 import Claim from "@/components/Claim.vue";
 import SearchInput from "@/components/SearchInput.vue";
 import HeroImage from "@/components/HeroImage.vue";
+import Item from "@/components/Item.vue";
 
 import debounce from "lodash.debounce";
 import axios from "axios";
@@ -32,7 +31,8 @@ export default {
   components: {
     Claim,
     SearchInput,
-    HeroImage
+    HeroImage,
+    Item
   },
   data() {
     return {
@@ -69,6 +69,7 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 
   &.flex-start {
     justify-content: flex-start;
@@ -97,5 +98,16 @@ export default {
 .move-down-enter,
 .move-down-leave-to {
   top: -2em;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  margin-top: 2em;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 </style>
